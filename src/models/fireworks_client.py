@@ -10,7 +10,7 @@ class FireworksVLMClient:
     def __init__(self, api_key: str | None = None, model: str | None = None):
         self.api_key = api_key or os.environ["FIREWORKS_API_KEY"]
         self.model = model or os.environ.get(
-            "FIREWORKS_VLM_MODEL", "accounts/fireworks/models/llava-v15-13b-fireworks"
+            "FIREWORKS_VLM_MODEL", "accounts/fireworks/models/gemma-4-26b-a4b-it"
         )
 
     def caption_frame(self, image_path: str, prompt: str = "Describe this frame in one concise sentence.") -> str:
