@@ -26,6 +26,7 @@ class FireworksVLMClient:
             json={
                 "model": self.model,
                 "max_tokens": 100,
+                "reasoning_effort": "none",
                 "messages": [
                     {
                         "role": "user",
