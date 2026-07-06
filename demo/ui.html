@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Captioning Agent — AMD ACT II</title>
+<style>
+  :root {
+    --bg: oklch(0.17 0.008 75);
+    --panel: oklch(0.21 0.01 75);
+    --panel-2: oklch(0.245 0.012 75);
+    --line: oklch(0.32 0.012 75);
+    --ink: oklch(0.94 0.005 75);
+    --ink-mute: oklch(0.72 0.01 75);
+    --accent: oklch(0.82 0.16 75);
+    --accent-ink: oklch(0.22 0.05 75);
+    --danger: oklch(0.68 0.19 25);
+    --ok: oklch(0.78 0.14 150);
+    --radius: 8px;
+    --z-toast: 30;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.55 system-ui, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+
+  header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 16px; font-weight: 650; margin: 0; letter-spacing: -0.01em; }
+  .tag {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 12px; color: var(--ink-mute);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 3px 10px; white-space: nowrap;
+  }
+  .tag b { color: var(--accent); font-weight: 600; }
+  header .spacer { flex: 1; }
+
+  main {
+    display: grid; grid-template-columns: minmax(380px, 46%) 1fr;
+    gap: 24px; padding: 24px; max-width: 1400px; margin: 0 auto;
+  }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+
+  /* ---- input side ---- */
+  .field { padding: 16px 16px 0; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-mute); margin-bottom: 6px; }
+  .row { display: flex; gap: 8px; }
+  input[type="text"] {
+    flex: 1; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 10px 12px; font: 14px ui-monospace, Consolas, monospace;
+  }
+  input[type="text"]::placeholder { color: var(--ink-mute); }
+  input[type="text"]:focus-visible, button:focus-visible, .chip:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 16px 0; }
+  .chip {
+    font: 12px ui-monospace, Consolas, monospace;
+    color: var(--ink-mute); background: none;
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 10px; cursor: pointer; transition: color .15s, border-color .15s;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .chip[aria-pressed="true"] { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 600; }
+
+  .actions { display: flex; align-items: center; gap: 12px; padding: 16px; }
+  #go {
+    background: var(--accent); color: var(--accent-ink);
+    font: 600 15px system-ui, sans-serif;
+    border: 0; border-radius: var(--radius);
+    padding: 11px 22px; cursor: pointer;
+    transition: filter .15s;
+  }
+  #go:hover:not(:disabled) { filter: brightness(1.08); }
+  #go:disabled { opacity: 0.55; cursor: default; }
+  #status { font: 13px ui-monospace, Consolas, monospace; color: var(--ink-mute); }
+
+  video {
+    display: block; width: 100%; max-height: 340px;
+    background: black; border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .film { padding: 12px 16px 16px; }
+  .film h2, .out h2 {
+    font-size: 12px; font-weight: 600; color: var(--ink-mute);
+    margin: 0 0 8px; letter-spacing: 0.02em;
+  }
+  .frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); gap: 6px; }
+  .frames img {
+    width: 100%; aspect-ratio: 16/9; object-fit: cover;
+    border-radius: 4px; border: 1px solid var(--line);
+    opacity: 0; animation: fadein .35s ease-out forwards;
+  }
+  @keyframes fadein { to { opacity: 1; } }
+
+  /* ---- output side ---- */
+  .out { padding: 16px 20px; }
+  .metrics {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    font: 13px ui-monospace, Consolas, monospace; color: var(--ink-mute);
+    padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .metrics b { color: var(--ink); font-weight: 600; }
+  .cap { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .cap:last-child { border-bottom: 0; }
+  .cap .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .cap .style { font: 600 12px ui-monospace, Consolas, monospace; color: var(--accent); }
+  .cap p { margin: 0; font-size: 17px; line-height: 1.5; max-width: 70ch; }
+  .cap button.copy {
+    margin-left: auto; background: none; border: 1px solid var(--line);
+    color: var(--ink-mute); border-radius: 6px; font-size: 12px;
+    padding: 2px 10px; cursor: pointer; transition: color .15s, border-color .15s;
+  }
+  .cap button.copy:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .cap button.copy.done { color: var(--ok); border-color: var(--ok); }
+
+  .empty { color: var(--ink-mute); padding: 8px 0 4px; }
+  .empty ol { margin: 10px 0 0; padding-left: 22px; }
+  .empty li { margin-bottom: 6px; }
+  .empty code { color: var(--ink); font-size: 13px; }
+
+  .skel { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .skel .bar { height: 14px; border-radius: 4px; background: var(--panel-2); margin-top: 8px; }
+  .skel .bar.w40 { width: 40%; } .skel .bar.w90 { width: 90%; } .skel .bar.w70 { width: 70%; }
+  .shimmer { position: relative; overflow: hidden; }
+  .shimmer::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, oklch(0.30 0.012 75 / 0.6), transparent);
+    transform: translateX(-100%); animation: sh 1.4s ease-out infinite;
+  }
+  @keyframes sh { to { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer::after { animation: none; }
+    .skel .bar { animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.6; } }
+    .frames img { animation: none; opacity: 1; }
+  }
+
+  .error {
+    border: 1px solid var(--danger); border-radius: var(--radius);
+    color: var(--danger); padding: 12px 14px; margin-top: 12px;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Video Captioning Agent</h1>
+  <span class="tag">AMD ACT II · <b>Track 2</b></span>
+  <span class="spacer"></span>
+  <span class="tag mono" id="model">model: …</span>
+</header>
+
+<main>
+  <section>
+    <div class="panel">
+      <div class="field">
+        <label for="src">Video · local path or URL</label>
+        <div class="row">
+          <input id="src" type="text" spellcheck="false"
+                 placeholder="D:/path/to/clip.mp4 or https://…/clip.mp4">
+        </div>
+      </div>
+      <div class="chips" id="samples"></div>
+      <div class="chips" id="styles" aria-label="Caption styles"></div>
+      <div class="actions">
+        <button id="go">Generate captions</button>
+        <span id="status" role="status"></span>
+      </div>
+    </div>
+
+    <div class="panel" id="player-panel" hidden style="margin-top: 24px;">
+      <video id="player" controls muted playsinline></video>
+      <div class="film" id="film" hidden>
+        <h2>WHAT THE AGENT SAW · 8 frames, evenly sampled</h2>
+        <div class="frames" id="frames"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel out" id="out">
+    <h2>CAPTIONS</h2>
+    <div id="results">
+      <div class="empty">
+        <p>Point the agent at any video clip and it writes one caption per style.</p>
+        <ol>
+          <li>Pick a <code>sample</code> above or paste a path/URL</li>
+          <li>Hit <code>Generate captions</code></li>
+          <li>The agent samples 8 frames, makes <b>one</b> multimodal call, returns all styles as JSON</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const SAMPLES = [
+  ["official · traffic", "https://storage.googleapis.com/amd-hackathon-clips/1860079-uhd_2560_1440_25fps.mp4"],
+  ["official · kitten", "https://storage.googleapis.com/amd-hackathon-clips/13825391-uhd_3840_2160_30fps.mp4"],
+  ["official · office", "https://storage.googleapis.com/amd-hackathon-clips/3044693-uhd_3840_2160_24fps.mp4"],
+  ["local · big buck bunny", "demo/samples/bbb_10s.mp4"],
+];
+const STYLES = ["formal", "sarcastic", "humorous_tech", "humorous_non_tech"];
+const $ = (s) => document.querySelector(s);
+
+const samplesEl = $("#samples");
+for (const [name, url] of SAMPLES) {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = name;
+  b.addEventListener("click", () => { $("#src").value = url; });
+  samplesEl.appendChild(b);
+}
+
+const stylesEl = $("#styles");
+for (const s of STYLES) {
+  const b = document.createElement("button");
+  b.className = "chip"; b.textContent = s;
+  b.setAttribute("aria-pressed", "true");
+  b.addEventListener("click", () =>
+    b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"));
+  stylesEl.appendChild(b);
+}
+
+fetch("/api/info").then(r => r.json()).then(d => {
+  $("#model").textContent = "model: " + d.model.split("/").pop();
+});
+
+function skeletons(n) {
+  let html = "";
+  for (let i = 0; i < n; i++)
+    html += `<div class="skel shimmer"><div class="bar w40"></div><div class="bar w90"></div><div class="bar w70"></div></div>`;
+  return html;
+}
+
+function showVideo(src) {
+  const p = $("#player");
+  p.src = /^https?:\/\//i.test(src) ? src : "/media?src=" + encodeURIComponent(src);
+  $("#player-panel").hidden = false;
+  $("#film").hidden = true;
+}
+
+let t0, timer;
+$("#go").addEventListener("click", async () => {
+  const video = $("#src").value.trim();
+  const styles = [...stylesEl.children]
+    .filter(b => b.getAttribute("aria-pressed") === "true")
+    .map(b => b.textContent);
+  if (!video) { $("#src").focus(); return; }
+  if (!styles.length) return;
+
+  $("#go").disabled = true;
+  showVideo(video);
+  $("#results").innerHTML = skeletons(styles.length);
+  t0 = performance.now();
+  timer = setInterval(() => {
+    $("#status").textContent = ((performance.now() - t0) / 1000).toFixed(1) + "s";
+  }, 100);
+
+  try {
+    const r = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ video, styles }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || r.statusText);
+    render(data, styles);
+  } catch (e) {
+    $("#results").innerHTML = `<div class="error">Generation failed: ${e.message}</div>`;
+  } finally {
+    clearInterval(timer);
+    $("#status").textContent = "";
+    $("#go").disabled = false;
+  }
+});
+
+function render(data, styles) {
+  const secs = ((performance.now() - t0) / 1000).toFixed(1);
+  let html = `<div class="metrics">
+    <span><b>${secs}s</b> end-to-end</span>
+    <span><b>${data.frames.length}</b> frames sampled</span>
+    <span><b>1</b> VLM call</span>
+  </div>`;
+  for (const s of styles) {
+    const text = data.captions[s] || "";
+    html += `<div class="cap">
+      <div class="head"><span class="style">${s}</span>
+        <button class="copy" data-t="${text.replaceAll('"', "&quot;")}">copy</button></div>
+      <p>${text}</p>
+    </div>`;
+  }
+  $("#results").innerHTML = html;
+  for (const b of document.querySelectorAll(".copy"))
+    b.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(b.dataset.t);
+      b.textContent = "copied"; b.classList.add("done");
+      setTimeout(() => { b.textContent = "copy"; b.classList.remove("done"); }, 1400);
+    });
+
+  const f = $("#frames");
+  f.innerHTML = "";
+  data.frames.forEach((b64, i) => {
+    const img = document.createElement("img");
+    img.src = "data:image/jpeg;base64," + b64;
+    img.alt = "sampled frame " + (i + 1);
+    img.style.animationDelay = (i * 45) + "ms";
+    f.appendChild(img);
+  });
+  $("#film").hidden = false;
+}
+</script>
+</body>
+</html>

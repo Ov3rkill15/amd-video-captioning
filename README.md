@@ -96,6 +96,18 @@ docker run --rm --entrypoint python -v "$(pwd)/demo:/app/demo" amd-video-caption
 > with `MSYS_NO_PATHCONV=1` — Git Bash tends to rewrite container paths
 > (`/input`, `/output`) into Windows paths.
 
+## Demo UI (local web app)
+
+A stdlib-only local web app for demo recordings: pick a video (path or URL),
+hit Generate, and watch the agent sample frames and write all four styled
+captions live, next to the video player.
+
+```bash
+python demo/app.py   # then open http://localhost:8765
+```
+
+No extra dependencies; it reuses the exact same pipeline functions as `agent.py`.
+
 ## Running the per-frame demo pipeline
 
 ```bash
