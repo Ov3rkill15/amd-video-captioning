@@ -1,97 +1,145 @@
-# AMD Developer Hackathon: ACT II — Video Captioning
+# AMD Developer Hackathon: ACT II — Video Captioning Agent
 
-Track: **Video Captioning** (beginner-friendly, prompt: "have fun")
+Track: **Video Captioning (Track 2)**
 Hackathon: [lablab.ai/ai-hackathons/amd-developer-hackathon-act-ii](https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-ii)
-Timeline: 6–11 Juli 2026
+Timeline: July 6–11, 2026
 
-## Ide
-Pipeline yang mengekstrak frame (dan opsional audio) dari video, lalu menggunakan
-VLM (Vision-Language Model) via Fireworks AI API untuk menghasilkan narasi per-frame.
+## What it does
+An agent that "watches" a video clip (evenly sampled frames via OpenCV) and uses a
+Vision-Language Model on the Fireworks AI API to write captions in the four styles
+required by the Track 2 spec: `formal`, `sarcastic`, `humorous_tech`, `humorous_non_tech`.
+
+Two modes:
+- **`agent.py` — submission mode (official Track 2 harness contract):** reads
+  `/input/tasks.json` (a list of `{task_id, video_url, styles}`), downloads each video,
+  samples 8 evenly spaced frames (downscaled to ≤768px), makes ONE multimodal VLM call
+  that returns all styles at once (JSON), writes `/output/results.json`, exits 0.
+  Tasks run in parallel (4 workers); the 3 official example UHD clips finish in ~25
+  seconds — far under the 10-minute budget for the ~12-clip hidden set.
+  Defensive by design: API retries, per-style fallback calls if the JSON response
+  fails to parse, and generic style-matched fallback captions if a video fails
+  entirely (a missing style scores zero).
+- **`main.py` — demo/exploration mode (CLI):** timestamped per-frame captions from a
+  local video file (`--input video.mp4`), useful for visual demos and debugging.
 
 ## Stack
 - Python 3.11
-- OpenCV (ekstraksi frame), ffmpeg-python (ekstraksi audio)
-- Fireworks AI API (VLM hosted, model default: `kimi-k2p6` — serverless, vision-capable)
-- AMD Developer Cloud / ROCm / MI300X (opsional untuk eksperimen model lokal — credit belum aktif per 5 Juli)
+- OpenCV (frame sampling), ffmpeg-python (optional audio extraction)
+- Fireworks AI API (hosted VLM, default model: `kimi-k2p6` — serverless, vision-capable)
+- AMD Developer Cloud / ROCm / MI300X (optional local-model experiments — credits not active as of Jul 5)
 
-## Kenapa bukan Gemma (untuk sekarang)
-Track ini awalnya dipilih (selain track utama Video Captioning) karena ada bonus prize
-"base use case for Gemma" dari Google DeepMind, lewat `accounts/fireworks/models/gemma-4-26b-a4b-it`
-(multimodal, 262k context). Setelah ditest (2026-07-05), model ini di akun Fireworks kita
-ternyata **hanya tersedia via Dedicated Deployment** (sewa GPU per jam, bukan serverless
-pay-per-token) — API call ke endpoint chat completions biasa selalu 404.
-Karena itu default VLM pipeline dipindah ke `kimi-k2p6` (serverless, vision-capable, sudah
-terverifikasi jalan). Deployment Gemma jadi stretch goal opsional kalau ada waktu/budget GPU.
+## Why not Gemma (for now)
+This track was originally attractive partly because of the Google DeepMind
+"base use case for Gemma" bonus prize, via `accounts/fireworks/models/gemma-4-26b-a4b-it`
+(multimodal, 262k context). Tested on 2026-07-05: on our Fireworks account this model
+is **only available via Dedicated Deployment** (hourly GPU rental, not serverless
+pay-per-token) — calls to the regular chat completions endpoint always 404.
+The pipeline's default VLM is therefore `kimi-k2p6` (serverless, vision-capable,
+verified working). A Gemma deployment remains an optional stretch goal if time/budget allows.
 
-## Status akses (update 2026-07-05)
-- Akun AMD Developer Cloud: sudah dibuat, **credit GPU belum muncul**
-- Fireworks AI API key: **sudah ada**, siap dipakai
-- Pipeline end-to-end **sudah ditest dan jalan** pakai video sintetis + model `kimi-k2p6`
-  (lihat `demo/samples/output.json`)
-- Karena captioning jalan lewat Fireworks API (bukan inference lokal), pipeline ini
-  bisa dikembangkan & ditest penuh sekarang tanpa nunggu credit AMD cair.
-  AMD Developer Cloud baru dibutuhkan nanti untuk eksperimen opsional di MI300X/ROCm.
+## Access status (updated 2026-07-07)
+- AMD Developer Cloud account: created, **GPU credits not yet active**
+- Fireworks AI API key: **active and verified**
+- End-to-end pipeline **tested and working** locally and inside Docker against the
+  3 official example clips (see `demo/samples/results_track2_examples.json`)
+- Since captioning inference runs on the Fireworks API (not local inference), the
+  agent can be fully developed and tested without waiting for AMD credits.
+  AMD Developer Cloud is only needed for optional MI300X/ROCm experiments later.
 
 ## Setup
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env   # isi FIREWORKS_API_KEY
+cp .env.example .env   # fill in FIREWORKS_API_KEY
 ```
 
-## Menjalankan pipeline
+## Sample demo videos
+
+`.mp4` files are not committed (see `.gitignore`). The per-frame demo mode uses
+Blender Foundation open-movie clips (CC-BY 3.0); download them with:
 
 ```bash
-python main.py --input demo/samples/sample.mp4 --output demo/samples/output.json --fps 1
+curl -L -o demo/samples/bbb_10s.mp4 "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4"
+curl -L -o demo/samples/sintel_10s.mp4 "https://test-videos.co.uk/vids/sintel/mp4/h264/360/Sintel_360_10s_1MB.mp4"
 ```
 
-Opsional ekstrak audio juga:
+Pipeline outputs for both clips live in `demo/samples/output_bbb.json` and
+`demo/samples/output_sintel.json` (frames in `frames_bbb/`, `frames_sintel/`).
+
+## Running the submission agent (Track 2 harness contract)
+
+Locally (no Docker), using env overrides:
 
 ```bash
-python main.py --input demo/samples/sample.mp4 --extract-audio
+INPUT_PATH=demo/samples/tasks_track2_examples.json OUTPUT_PATH=/tmp/results.json python agent.py
 ```
 
-## Menjalankan via Docker (submission wajib containerized)
+Via Docker — exactly as the judging harness runs it (the image carries its own `.env`
+because Track 2 injects **no** API key; use a spend-limited Fireworks key):
 
 ```bash
 docker build -t amd-video-captioning .
-docker run --rm --env-file .env -v "$(pwd)/demo:/app/demo" amd-video-captioning --input demo/samples/sample.mp4
+docker run --rm -v "$(pwd)/input:/input:ro" -v "$(pwd)/output:/output" amd-video-captioning
 ```
 
-> Kalau pakai Git Bash di Windows dan volume mount tidak muncul di host, jalankan dengan
-> `MSYS_NO_PATHCONV=1` di depan `docker run` — Git Bash suka mengubah path container
-> (`/app/demo`) jadi path Windows secara otomatis.
+Results for the 3 official example clips are checked in at
+`demo/samples/results_track2_examples.json`
+(input: `demo/samples/tasks_track2_examples.json`). Exit code 0, ~25 seconds total.
 
-## Cek koneksi & akses model Fireworks
+The per-frame demo CLI still works in Docker by overriding the entrypoint:
 
-Sebelum jalanin pipeline penuh, verifikasi API key valid dan model VLM yang dikonfigurasi
-di `.env` benar-benar accessible (serverless, bukan dedicated-deployment-only):
+```bash
+docker run --rm --entrypoint python -v "$(pwd)/demo:/app/demo" amd-video-captioning main.py --input demo/samples/bbb_10s.mp4
+```
+
+> On Windows Git Bash, if volume mounts don't show up on the host, prefix `docker run`
+> with `MSYS_NO_PATHCONV=1` — Git Bash tends to rewrite container paths
+> (`/input`, `/output`) into Windows paths.
+
+## Running the per-frame demo pipeline
+
+```bash
+python main.py --input demo/samples/bbb_10s.mp4 --output demo/samples/output_bbb.json --frames-dir demo/samples/frames_bbb --fps 0.5
+```
+
+Optionally extract the audio track too:
+
+```bash
+python main.py --input demo/samples/bbb_10s.mp4 --extract-audio
+```
+
+## Verifying Fireworks connectivity & model access
+
+Before a full run, verify the API key is valid and the VLM configured in `.env`
+is actually accessible (serverless, not dedicated-deployment-only):
 
 ```bash
 python scripts/check_model.py
 ```
 
-Output `OK: '<model>' is accessible and supports image input.` berarti siap dipakai.
-Kalau `FAIL`, script akan menampilkan daftar model serverless yang benar-benar accessible
-di API key kamu.
+`OK: '<model>' is accessible and supports image input.` means you're ready.
+On `FAIL`, the script lists the serverless models actually accessible to your key.
 
-## Struktur
+## Project structure
 
 ```
 src/
-  pipeline/       # extract_frames.py, caption.py
+  pipeline/       # extract_frames.py, caption.py, style_caption.py
   models/         # fireworks_client.py
   utils/          # io_utils.py
 demo/
-  samples/        # sample video, frame output, hasil JSON harian
-  script.md       # naskah demo (isi H-1 sebelum deadline)
-main.py           # CLI entrypoint
+  samples/        # sample videos, frame output, daily JSON results
+  script.md       # demo recording script
+agent.py          # submission ENTRYPOINT — Track 2 harness contract (/input → /output)
+main.py           # per-frame demo CLI
 Dockerfile
 ```
 
 ## Progress log
-<!-- update tiap hari sebagai bukti progres -->
-- **2026-07-05**: Scaffolding awal — struktur pipeline, Fireworks client wrapper, Dockerfile, README.
-- **2026-07-05**: Switch default VLM ke `gemma-4-26b-a4b-it` (qualify bonus prize Gemma). Fireworks API key sudah ada; AMD Developer Cloud credit masih pending.
-- **2026-07-05**: Test end-to-end pakai video sintetis: `gemma-4-26b-a4b-it` ternyata 404 (cuma tersedia via Dedicated Deployment di akun kita, bukan serverless). Switch default VLM ke `kimi-k2p6` (serverless, vision-capable). Juga fix bug: response kimi-k2 berisi reasoning trace mentah tanpa `reasoning_effort: "none"` — sudah ditambahkan di `fireworks_client.py`. Pipeline sekarang jalan bersih end-to-end.
-- **2026-07-05**: Docker image di-build & ditest (`docker build` + `docker run` dengan volume mount) — hasil caption identik dengan run lokal. Tambah `scripts/check_model.py` untuk verifikasi cepat API key + model access tanpa proses video penuh.
+<!-- updated daily as evidence of progress -->
+- **2026-07-05**: Initial scaffolding — pipeline structure, Fireworks client wrapper, Dockerfile, README.
+- **2026-07-05**: Switched default VLM to `gemma-4-26b-a4b-it` (to qualify for the Gemma bonus prize). Fireworks API key active; AMD Developer Cloud credits still pending.
+- **2026-07-05**: End-to-end test with a synthetic video: `gemma-4-26b-a4b-it` turned out to 404 (Dedicated-Deployment-only on our account, not serverless). Switched default VLM to `kimi-k2p6` (serverless, vision-capable). Also fixed a bug where kimi-k2 responses contained raw reasoning traces without `reasoning_effort: "none"` — added in `fireworks_client.py`. Pipeline now runs cleanly end to end.
+- **2026-07-05**: Docker image built & tested (`docker build` + `docker run` with volume mounts) — captions identical to the local run. Added `scripts/check_model.py` for quick API-key + model-access verification without processing a full video.
+- **2026-07-06** (official kickoff): Re-verified API access on day one (`check_model.py` → OK). Replaced synthetic videos with 2 real CC-BY clips (Big Buck Bunny 720p + Sintel 360p, Blender Foundation) — pipeline runs cleanly on both with scene-specific, varied captions (see `output_bbb.json`, `output_sintel.json`). Drafted the full `demo/script.md` (recording flow + judge talking points + license notes).
+- **2026-07-07**: Official submission guide released — the Track 2 contract is harness-based: read `/input/tasks.json` (video_url + 4 styles), write `/output/results.json` (one caption per style per video). Major refactor: added `agent.py` (submission entrypoint; video download, 4 parallel workers, layered fallbacks), `src/pipeline/style_caption.py` (one multimodal call → 4 styled captions, robust JSON parsing), `sample_frames_b64()` (8 evenly spaced in-memory frames, ≤768px), upgraded `fireworks_client.py` (multi-image + retries + `FIREWORKS_BASE_URL`). Tested locally and in Docker against the 3 official example clips: exit 0, ~25 seconds, accurate captions with on-target styles (see `results_track2_examples.json`). Image is linux/amd64, 1.2GB. All repo docs rewritten in English.

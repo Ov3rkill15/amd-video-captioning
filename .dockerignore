@@ -1,0 +1,13 @@
+# NOTE: .env is intentionally NOT ignored — Track 2 injects no API key, so the
+# image must carry its own Fireworks credentials (use a spend-limited key).
+.git
+.gitignore
+__pycache__
+*.pyc
+.venv
+venv
+demo/samples/frames*/
+demo/samples/*.mp4
+demo/samples/*.json
+AMD Hackathon Guide.md
+*.egg-info

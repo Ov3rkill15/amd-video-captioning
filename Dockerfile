@@ -9,4 +9,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["python", "main.py"]
+# Harness contract (Track 2): reads /input/tasks.json, writes /output/results.json.
+ENTRYPOINT ["python", "agent.py"]

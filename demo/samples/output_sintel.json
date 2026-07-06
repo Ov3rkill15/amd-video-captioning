@@ -1,0 +1,36 @@
+{
+  "video": "demo/samples/sintel_10s.mp4",
+  "frames": [
+    {
+      "frame_index": 0,
+      "timestamp_sec": 0.0,
+      "path": "demo\\samples\\frames_sintel\\frame_00000.jpg",
+      "caption": "A red-haired person in winter clothing stands in a misty, snow-covered landscape with dark rocky outcrops."
+    },
+    {
+      "frame_index": 1,
+      "timestamp_sec": 2.0,
+      "path": "demo\\samples\\frames_sintel\\frame_00001.jpg",
+      "caption": "A silhouetted figure leaps through a snowy, misty environment with a weapon raised overhead, while another character stands in the blurred foreground."
+    },
+    {
+      "frame_index": 2,
+      "timestamp_sec": 4.0,
+      "path": "demo\\samples\\frames_sintel\\frame_00002.jpg",
+      "caption": "Kratos grapples with a large, reptilian humanoid creature in a snowy, misty environment."
+    },
+    {
+      "frame_index": 3,
+      "timestamp_sec": 6.0,
+      "path": "demo\\samples\\frames_sintel\\frame_00003.jpg",
+      "caption": "Two figures confront each other in a misty, snow-covered mountain landscape."
+    },
+    {
+      "frame_index": 4,
+      "timestamp_sec": 8.0,
+      "path": "demo\\samples\\frames_sintel\\frame_00004.jpg",
+      "caption": "A red-haired person in a brown coat struggles through deep snow against a cracked, icy wall in a blizzard."
+    }
+  ],
+  "generated_at": "2026-07-06T16:21:46.495668+00:00"
+}

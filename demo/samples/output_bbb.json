@@ -1,0 +1,36 @@
+{
+  "video": "demo/samples/bbb_10s.mp4",
+  "frames": [
+    {
+      "frame_index": 0,
+      "timestamp_sec": 0.0,
+      "path": "demo\\samples\\frames_bbb\\frame_00000.jpg",
+      "caption": "A lush, sunlit grassy mound with a dark burrow entrance at the base of a gnarled tree, surrounded by dense forest foliage."
+    },
+    {
+      "frame_index": 1,
+      "timestamp_sec": 2.0,
+      "path": "demo\\samples\\frames_bbb\\frame_00001.jpg",
+      "caption": "A sunlit, moss-covered hill with a dark burrow entrance at its base sits beneath a large tree with exposed roots, surrounded by lush greenery and dappled forest light."
+    },
+    {
+      "frame_index": 2,
+      "timestamp_sec": 4.0,
+      "path": "demo\\samples\\frames_bbb\\frame_00002.jpg",
+      "caption": "A sunlit, moss-covered mound with a dark burrow entrance sits beneath a large tree with exposed roots in a lush, vibrant forest clearing."
+    },
+    {
+      "frame_index": 3,
+      "timestamp_sec": 6.0,
+      "path": "demo\\samples\\frames_bbb\\frame_00003.jpg",
+      "caption": "A sunlit, moss-covered mound with a dark tunnel entrance sits at the base of a gnarled tree in a lush, animated forest."
+    },
+    {
+      "frame_index": 4,
+      "timestamp_sec": 8.0,
+      "path": "demo\\samples\\frames_bbb\\frame_00004.jpg",
+      "caption": "A sunlit, moss-covered tree with exposed roots features a dark burrow entrance nestled among rocks and lush green grass in a vibrant forest clearing."
+    }
+  ],
+  "generated_at": "2026-07-06T16:18:55.857297+00:00"
+}
