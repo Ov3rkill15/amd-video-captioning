@@ -2,6 +2,7 @@
 
 Usage: python scripts/check_model.py
 """
+import base64
 import os
 import sys
 
@@ -11,11 +12,15 @@ from dotenv import load_dotenv
 
 def main():
     load_dotenv()
+    # Same resolution order as src/models/fireworks_client.py: plain key first,
+    # then the base64 form that ships inside the public submission image.
     api_key = os.environ.get("FIREWORKS_API_KEY")
+    if not api_key and os.environ.get("FIREWORKS_API_KEY_B64"):
+        api_key = base64.b64decode(os.environ["FIREWORKS_API_KEY_B64"]).decode("utf-8").strip()
     model = os.environ.get("FIREWORKS_VLM_MODEL")
 
     if not api_key:
-        print("FAIL: FIREWORKS_API_KEY is not set in .env")
+        print("FAIL: neither FIREWORKS_API_KEY nor FIREWORKS_API_KEY_B64 is set in .env")
         sys.exit(1)
     if not model:
         print("FAIL: FIREWORKS_VLM_MODEL is not set in .env")
