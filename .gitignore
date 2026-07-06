@@ -5,3 +5,4 @@ __pycache__/
 venv/
 demo/samples/*.mp4
 *.egg-info/
+eval_results.json
