@@ -29,7 +29,12 @@ MAX_WORKERS = 4
 DOWNLOAD_TIMEOUT = 180
 
 
-def download_video(url: str, dest_dir: str, task_id: str) -> str:
+def resolve_video(url: str, dest_dir: str, task_id: str) -> str:
+    """Download an http(s) video URL; anything else is treated as a local path."""
+    if not url.lower().startswith(("http://", "https://")):
+        if not Path(url).is_file():
+            raise FileNotFoundError(f"Local video not found: {url}")
+        return url
     path = str(Path(dest_dir) / f"video_{task_id}.mp4")
     with requests.get(url, stream=True, timeout=DOWNLOAD_TIMEOUT) as r:
         r.raise_for_status()
@@ -44,10 +49,11 @@ def process_task(task: dict, client: FireworksVLMClient, work_dir: str) -> dict:
     styles = task.get("styles") or DEFAULT_STYLES
     started = time.time()
     try:
-        video_path = download_video(task["video_url"], work_dir, task_id)
+        video_path = resolve_video(task["video_url"], work_dir, task_id)
         frames = sample_frames_b64(video_path, num_frames=NUM_FRAMES)
         captions = generate_styled_captions(client, frames, styles)
-        Path(video_path).unlink(missing_ok=True)  # free disk before the next clip
+        if video_path.startswith(work_dir):  # only delete files we downloaded
+            Path(video_path).unlink(missing_ok=True)
         print(f"[task {task_id}] done in {time.time() - started:.1f}s", flush=True)
     except Exception as e:
         # A broken clip must never sink the whole run; emit style-matched fallbacks.
