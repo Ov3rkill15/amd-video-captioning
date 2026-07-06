@@ -13,7 +13,7 @@ STYLE_DEFINITIONS = {
 FALLBACK_CAPTIONS = {
     "formal": "A short video clip depicting a scene with visual activity and movement.",
     "sarcastic": "Ah yes, another video clip. Truly groundbreaking footage of things happening.",
-    "humorous_tech": "This clip buffered its way into my heart — 100% loaded, 0 bugs found.",
+    "humorous_tech": "This clip buffered its way into my heart: 100% loaded, 0 bugs found.",
     "humorous_non_tech": "Somewhere out there, something happened on camera, and honestly, good for it.",
 }
 
@@ -51,6 +51,7 @@ def _build_prompt(styles: list[str], num_frames: int) -> str:
         "- accurately describe THIS specific video (mention concrete subjects/actions you see),\n"
         "- be 1-2 sentences, under 40 words,\n"
         "- be in English,\n"
+        "- use plain punctuation: no em-dashes or en-dashes, prefer commas or periods,\n"
         "- nail the requested tone.\n\n"
         f"Style definitions:\n{style_lines}\n\n"
         f"Respond with ONLY a valid JSON object with exactly these keys: {keys}. "
@@ -97,7 +98,8 @@ def generate_styled_captions(
             captions[style] = client.chat(
                 "The images below are frames sampled in order from one short video clip. "
                 f"Write a single caption for the video in this style: {style} ({definition}). "
-                "1-2 sentences, under 40 words, in English. Respond with the caption text only.",
+                "1-2 sentences, under 40 words, in English, plain punctuation (no em-dashes). "
+                "Respond with the caption text only.",
                 images_b64=frames_b64,
                 max_tokens=120,
                 temperature=0.7,
