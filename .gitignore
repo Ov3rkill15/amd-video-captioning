@@ -6,3 +6,6 @@ venv/
 demo/samples/*.mp4
 *.egg-info/
 eval_results.json
+input/
+output/
+AMD Hackathon Guide.md

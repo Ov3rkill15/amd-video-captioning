@@ -1,29 +1,29 @@
 [
   {
-    "task_id": "v1",
+    "task_id": "1",
     "captions": {
-      "formal": "A time-lapse video captures heavy vehicular traffic flowing along a multi-lane urban avenue lined with autumn-colored trees, set against a backdrop of high-rise residential buildings.",
-      "sarcastic": "Ah yes, the timeless beauty of thousands of strangers collectively deciding to sit in metal boxes and move slightly forward every few seconds.",
-      "humorous_tech": "This city street is basically a real-world git merge conflict with no clear main branch and everyone's pushing to production at rush hour.",
-      "humorous_non_tech": "The trees are showing off their perfect fall colors while the cars are just showing off their perfect ability to go nowhere fast."
+      "formal": "A multi-lane city street in autumn shows heavy traffic flowing past yellow-leaved trees and tall residential buildings under bright sunlight.",
+      "sarcastic": "Wow, cars driving on a road. Truly groundbreaking urban innovation happening here.",
+      "humorous_tech": "This traffic loop has been running for hours with zero memory leaks, though the carbon footprint buffer is definitely overflowing.",
+      "humorous_non_tech": "Rush hour in a city where everyone collectively agreed to forget how to merge nicely."
     }
   },
   {
-    "task_id": "v2",
+    "task_id": "2",
     "captions": {
-      "formal": "A small orange kitten emerges from beneath leafy bushes and walks toward the camera on a dirt path.",
-      "sarcastic": "A tiny orange predator launches a slow-motion ambush from the bushes, absolutely terrifying.",
-      "humorous_tech": "Kitten.exe has finished loading and is now approaching the camera with a critical cuteness overflow error.",
-      "humorous_non_tech": "This orange fluffball clearly thinks it's a lion stalking through the jungle, not a kitten in a garden."
+      "formal": "A small orange kitten walks slowly toward the camera through a shaded path bordered by dense green foliage and tree trunks.",
+      "sarcastic": "Breaking news: a kitten walks forward. Nature documentaries will never recover from this level of drama.",
+      "humorous_tech": "Kernel panic averted. This orange fluff successfully compiled a walk.exe with zero segmentation faults.",
+      "humorous_non_tech": "This kitten is walking toward you like it already knows you have no treats and does not care."
     }
   },
   {
-    "task_id": "v3",
+    "task_id": "3",
     "captions": {
-      "formal": "A woman in a light jacket and orange top types intently on a desktop computer in a modern office environment with plants and overhead lighting.",
-      "sarcastic": "Thrilling cinema: woman sits at desk, types, and occasionally blinks. Hollywood's missing this gem.",
-      "humorous_tech": "She's compiling a new kernel while her mouse sits in standby mode, still on USB 2.0.",
-      "humorous_non_tech": "She types like she's trying to win an argument with the keyboard."
+      "formal": "A woman sits at a desk in a modern office, typing on a keyboard in front of a large computer monitor.",
+      "sarcastic": "Another thrilling episode of someone staring at a screen and pressing buttons. The plants are the real stars here.",
+      "humorous_tech": "Keyboard input detected, CPU at 100 percent focus, zero bugs reported. This human-machine interface is running smoothly.",
+      "humorous_non_tech": "She is typing with the intensity of someone who just remembered a deadline exists. The plant in the corner is definitely judging her."
     }
   }
 ]
