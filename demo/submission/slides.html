@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>StyleCap slides</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; color: #f2f4f8; }
+  .slide {
+    width: 1280px; height: 720px; overflow: hidden; position: relative;
+    background: #0d0f14; padding: 70px 90px; page-break-after: always;
+    display: flex; flex-direction: column;
+  }
+  .glow { position: absolute; border-radius: 50%; filter: blur(120px); }
+  .gr { width: 480px; height: 480px; background: rgba(224,54,44,.16); top: -180px; right: -120px; }
+  .gb { width: 420px; height: 420px; background: rgba(64,120,255,.12); bottom: -200px; left: -100px; }
+  .kick { font-size: 15px; letter-spacing: .3em; text-transform: uppercase; color: #8b93a7; font-weight: 600; margin-bottom: 14px; }
+  .kick b { color: #e0362c; }
+  h1 { font-size: 96px; font-weight: 800; letter-spacing: -.02em; }
+  h1 .cap { color: #e0362c; }
+  h2 { font-size: 44px; font-weight: 700; margin-bottom: 30px; }
+  h2 .n { color: #e0362c; margin-right: 14px; }
+  p, li { font-size: 22px; line-height: 1.55; color: #c9cfdb; }
+  .foot { position: absolute; bottom: 34px; left: 90px; right: 90px; font-size: 15px; color: #565d70; display: flex; justify-content: space-between; }
+  .chips { display: flex; gap: 14px; margin-top: 40px; }
+  .chip { font-size: 17px; font-weight: 600; padding: 10px 22px; border-radius: 999px; }
+  .c1 { color: #9db4ff; background: rgba(61,79,138,.25); }
+  .c2 { color: #ffc46b; background: rgba(138,106,47,.25); }
+  .c3 { color: #7fe3a9; background: rgba(47,122,80,.25); }
+  .c4 { color: #ff9d9d; background: rgba(138,61,61,.25); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .card { background: #151924; border: 1px solid #232a3a; border-radius: 14px; padding: 26px 30px; }
+  .card h3 { font-size: 21px; margin-bottom: 8px; color: #f2f4f8; }
+  .card p { font-size: 18px; line-height: 1.5; }
+  .big { font-size: 46px; font-weight: 800; color: #f2f4f8; }
+  .big small { font-size: 18px; font-weight: 400; color: #8b93a7; display: block; margin-top: 6px; }
+  .steps { display: flex; gap: 18px; margin-top: 10px; }
+  .step { flex: 1; background: #151924; border: 1px solid #232a3a; border-radius: 14px; padding: 24px 22px; }
+  .step .num { font-size: 15px; font-weight: 700; color: #e0362c; letter-spacing: .15em; margin-bottom: 10px; }
+  .step h3 { font-size: 20px; margin-bottom: 8px; }
+  .step p { font-size: 16.5px; line-height: 1.5; }
+  code, .mono { font-family: Consolas, monospace; }
+  .cap-line { background: #151924; border: 1px solid #232a3a; border-left: 4px solid; border-radius: 10px; padding: 16px 22px; margin-bottom: 14px; }
+  .cap-line .lbl { font-size: 14px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 5px; }
+  .cap-line p { font-size: 18.5px; color: #e6e9f0; }
+  .b1 { border-left-color: #9db4ff; } .b1 .lbl { color: #9db4ff; }
+  .b2 { border-left-color: #ffc46b; } .b2 .lbl { color: #ffc46b; }
+  .b3 { border-left-color: #7fe3a9; } .b3 .lbl { color: #7fe3a9; }
+  .b4 { border-left-color: #ff9d9d; } .b4 .lbl { color: #ff9d9d; }
+  ul.clean { list-style: none; }
+  ul.clean li { padding-left: 34px; position: relative; margin-bottom: 16px; }
+  ul.clean li::before { content: "→"; position: absolute; left: 0; color: #e0362c; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- 1 · Title -->
+<div class="slide" style="justify-content:center">
+  <div class="glow gr"></div><div class="glow gb"></div>
+  <div class="kick"><b>AMD</b> Developer Hackathon: ACT II · Video Captioning Track</div>
+  <h1>Style<span class="cap">Cap</span></h1>
+  <p style="font-size:30px;margin-top:18px">One video in. <b style="color:#f2f4f8">Four voices out.</b></p>
+  <div class="chips">
+    <div class="chip c1">Formal</div>
+    <div class="chip c2">Sarcastic</div>
+    <div class="chip c3">Humorous · tech</div>
+    <div class="chip c4">Humorous · everyday</div>
+  </div>
+  <div class="foot"><span>github.com/Ov3rkill15/amd-video-captioning</span><span>MIT licensed</span></div>
+</div>
+
+<!-- 2 · The task -->
+<div class="slide">
+  <div class="glow gr"></div>
+  <h2><span class="n">01</span>The task</h2>
+  <p style="margin-bottom:28px">Track 2 is harness-judged: the container receives video URLs and must return one caption
+  per requested style, faithful to the footage and true to the tone. An LLM judge scores every caption on
+  <b style="color:#f2f4f8">accuracy</b> and <b style="color:#f2f4f8">style match</b>.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3 class="mono" style="color:#9db4ff">/input/tasks.json</h3>
+      <p class="mono" style="font-size:16px">{ "task_id": "1",<br>&nbsp;&nbsp;"video_url": "https://...clip.mp4",<br>&nbsp;&nbsp;"styles": ["formal", "sarcastic",<br>&nbsp;&nbsp;&nbsp;&nbsp;"humorous_tech", "humorous_non_tech"] }</p>
+    </div>
+    <div class="card">
+      <h3 class="mono" style="color:#7fe3a9">/output/results.json</h3>
+      <p class="mono" style="font-size:16px">{ "task_id": "1",<br>&nbsp;&nbsp;"captions": {<br>&nbsp;&nbsp;&nbsp;&nbsp;"formal": "...", "sarcastic": "...",<br>&nbsp;&nbsp;&nbsp;&nbsp;"humorous_tech": "...", ... } }</p>
+    </div>
+  </div>
+  <p style="margin-top:26px">Hidden evaluation set: ~12 unseen clips, 30s to 2min, spanning nature, urban, animals, people, sports, food, weather, and technology.</p>
+  <div class="foot"><span>StyleCap</span><span>2 / 7</span></div>
+</div>
+
+<!-- 3 · How it works -->
+<div class="slide">
+  <div class="glow gb"></div>
+  <h2><span class="n">02</span>How it works</h2>
+  <div class="steps">
+    <div class="step"><div class="num">STEP 1</div><h3>Download</h3><p>Fetch each clip; 4 tasks run in parallel workers.</p></div>
+    <div class="step"><div class="num">STEP 2</div><h3>Sample frames</h3><p>8 evenly spaced frames via OpenCV, in memory, downscaled to 768px.</p></div>
+    <div class="step"><div class="num">STEP 3</div><h3>One VLM call</h3><p>A single multimodal request to Fireworks AI (kimi-k2p6) returns all four styles at once.</p></div>
+    <div class="step"><div class="num">STEP 4</div><h3>Validate &amp; write</h3><p>Robust JSON parsing, then exact harness-format output.</p></div>
+  </div>
+  <div style="margin-top:44px" class="card">
+    <h3>Tone quality is engineered, not hoped for</h3>
+    <p>Few-shot tone exemplars are baked into the prompt. They were selected with our own LLM-judge evaluation harness
+    (<span class="mono">scripts/eval_captions.py</span>), which scores candidate prompts on the same two dimensions the judges use.</p>
+  </div>
+  <div class="foot"><span>StyleCap</span><span>3 / 7</span></div>
+</div>
+
+<!-- 4 · Built for the harness -->
+<div class="slide">
+  <div class="glow gr"></div>
+  <h2><span class="n">03</span>Built for the harness</h2>
+  <div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:20px">
+    <div class="card"><div class="big">~20s<small>3 official UHD clips end to end (10 min budget)</small></div></div>
+    <div class="card"><div class="big">1 call<small>per video, all four styles at once</small></div></div>
+    <div class="card"><div class="big">1.21 GB<small>linux/amd64 image (10 GB limit)</small></div></div>
+  </div>
+  <ul class="clean" style="margin-top:40px">
+    <li>Exit code 0, valid JSON, every requested style always present</li>
+    <li>Public image: <span class="mono">ghcr.io/ov3rkill15/amd-video-captioning:latest</span>, anonymously pullable</li>
+    <li>Container starts instantly (no model weights inside; inference is serverless via API)</li>
+  </ul>
+  <div class="foot"><span>StyleCap</span><span>4 / 7</span></div>
+</div>
+
+<!-- 5 · Robustness -->
+<div class="slide">
+  <div class="glow gb"></div>
+  <h2><span class="n">04</span>A broken clip never sinks the run</h2>
+  <p style="margin-bottom:30px">Three fallback layers guarantee a complete, valid answer for every task:</p>
+  <div class="steps">
+    <div class="step"><div class="num">LAYER 1</div><h3>API retries</h3><p>Transient errors and rate limits are retried with backoff.</p></div>
+    <div class="step"><div class="num">LAYER 2</div><h3>Per-style recovery</h3><p>If the combined call fails to parse, each style is requested individually.</p></div>
+    <div class="step"><div class="num">LAYER 3</div><h3>Guaranteed captions</h3><p>As a last resort, safe generic captions are emitted, so no style is ever missing.</p></div>
+  </div>
+  <p style="margin-top:36px">Missing styles score zero for a clip. With this design, that failure mode is structurally impossible:
+  the container always exits 0 with a complete <span class="mono">results.json</span>.</p>
+  <div class="foot"><span>StyleCap</span><span>5 / 7</span></div>
+</div>
+
+<!-- 6 · Sample output -->
+<div class="slide">
+  <div class="glow gr"></div>
+  <h2><span class="n">05</span>Sample output · official kitten clip</h2>
+  <div class="cap-line b1"><div class="lbl">Formal</div><p>A small orange kitten walks slowly toward the camera through a shaded path bordered by dense green foliage and tree trunks.</p></div>
+  <div class="cap-line b2"><div class="lbl">Sarcastic</div><p>Breaking news: a kitten walks forward. Nature documentaries will never recover from this level of drama.</p></div>
+  <div class="cap-line b3"><div class="lbl">Humorous · tech</div><p>Kernel panic averted. This orange fluff successfully compiled a walk.exe with zero segmentation faults.</p></div>
+  <div class="cap-line b4"><div class="lbl">Humorous · everyday</div><p>This kitten is walking toward you like it already knows you have no treats and does not care.</p></div>
+  <div class="foot"><span>StyleCap</span><span>6 / 7</span></div>
+</div>
+
+<!-- 7 · Wrap up -->
+<div class="slide">
+  <div class="glow gr"></div><div class="glow gb"></div>
+  <h2><span class="n">06</span>Generalisation, not memorisation</h2>
+  <ul class="clean">
+    <li>Prompts are purely style-driven; nothing is tuned to the example clips</li>
+    <li>Same pipeline handles nature, urban, animals, people, sports, food, weather, tech footage</li>
+    <li>Provider-agnostic client (OpenAI-compatible), model swappable via env config</li>
+    <li>Modular repo: <span class="mono">src/pipeline</span> · <span class="mono">src/models</span> · <span class="mono">scripts/eval_captions.py</span> · local web demo UI</li>
+  </ul>
+  <div style="margin-top:44px" class="grid2">
+    <div class="card"><h3>Image</h3><p class="mono" style="font-size:17px">ghcr.io/ov3rkill15/amd-video-captioning:latest</p></div>
+    <div class="card"><h3>Source</h3><p class="mono" style="font-size:17px">github.com/Ov3rkill15/amd-video-captioning</p></div>
+  </div>
+  <div class="foot"><span>StyleCap · AMD Developer Hackathon ACT II</span><span>7 / 7</span></div>
+</div>
+
+</body>
+</html>

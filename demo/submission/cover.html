@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>StyleCap cover</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #0d0f14;
+    color: #f2f4f8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 140px;
+    position: relative;
+  }
+  .glow { position: absolute; border-radius: 50%; filter: blur(160px); }
+  .glow.red  { width: 720px; height: 720px; background: rgba(224,54,44,.20); top: -260px; right: -160px; }
+  .glow.blue { width: 640px; height: 640px; background: rgba(64,120,255,.14); bottom: -280px; left: -120px; }
+  .kicker {
+    font-size: 26px; letter-spacing: .35em; text-transform: uppercase;
+    color: #8b93a7; margin-bottom: 34px; font-weight: 600;
+  }
+  .kicker b { color: #e0362c; font-weight: 700; }
+  h1 { font-size: 168px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+  h1 .cap { color: #e0362c; }
+  .tag { font-size: 46px; color: #c9cfdb; margin-top: 30px; font-weight: 300; }
+  .tag b { color: #f2f4f8; font-weight: 600; }
+  .chips { display: flex; gap: 22px; margin-top: 66px; }
+  .chip { font-size: 27px; font-weight: 600; padding: 16px 34px; border-radius: 999px; border: 2px solid transparent; }
+  .c1 { color: #9db4ff; border-color: #3d4f8a; background: rgba(61,79,138,.18); }
+  .c2 { color: #ffc46b; border-color: #8a6a2f; background: rgba(138,106,47,.18); }
+  .c3 { color: #7fe3a9; border-color: #2f7a50; background: rgba(47,122,80,.18); }
+  .c4 { color: #ff9d9d; border-color: #8a3d3d; background: rgba(138,61,61,.18); }
+  .foot {
+    position: absolute; bottom: 64px; left: 140px; right: 140px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 25px; color: #6d7488;
+  }
+  .foot .sep { margin: 0 14px; color: #3a4052; }
+</style>
+</head>
+<body>
+  <div class="glow red"></div>
+  <div class="glow blue"></div>
+  <div class="kicker"><b>AMD</b> Developer Hackathon: ACT II &nbsp;·&nbsp; Video Captioning Track</div>
+  <h1>Style<span class="cap">Cap</span></h1>
+  <div class="tag">One video in. <b>Four voices out.</b></div>
+  <div class="chips">
+    <div class="chip c1">Formal</div>
+    <div class="chip c2">Sarcastic</div>
+    <div class="chip c3">Humorous · tech</div>
+    <div class="chip c4">Humorous · everyday</div>
+  </div>
+  <div class="foot">
+    <div>Fireworks AI VLM <span class="sep">|</span> single multimodal call <span class="sep">|</span> ~7s per clip</div>
+    <div>ghcr.io/ov3rkill15/amd-video-captioning</div>
+  </div>
+</body>
+</html>
