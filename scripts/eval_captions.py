@@ -9,6 +9,7 @@ Results: eval_results.json + a compact table on stdout.
 
 import argparse
 import json
+import os
 import statistics
 import sys
 import tempfile
@@ -148,6 +149,32 @@ VARIANTS = {
 }
 
 
+# ---------------- model A/B ----------------
+
+def default_client():
+    return FireworksVLMClient()
+
+
+def gemma_client():
+    """Gemma on an OpenAI-compatible host (OpenRouter by default)."""
+    key = os.environ.get("GEMMA_API_KEY")
+    if not key:
+        raise RuntimeError("Set GEMMA_API_KEY (e.g. an OpenRouter key) to run gemma variants")
+    return FireworksVLMClient(
+        api_key=key,
+        model=os.environ.get("GEMMA_MODEL", "google/gemma-4-26b-a4b-it"),
+        base_url=os.environ.get("GEMMA_BASE_URL", "https://openrouter.ai/api/v1"),
+    )
+
+
+# Same prompts, different VLM. Excluded from the default run because they
+# need GEMMA_API_KEY; request explicitly: --variants baseline,gemma
+MODEL_VARIANTS = {
+    "gemma": (gemma_client, v_baseline),
+    "gemma_twostage": (gemma_client, v_twostage),
+}
+
+
 # ---------------- judge ----------------
 
 def judge(client, path, captions) -> dict:
@@ -171,12 +198,13 @@ def judge(client, path, captions) -> dict:
 
 # ---------------- run ----------------
 
-def run_cell(variant, fn, clip, path):
-    client = FireworksVLMClient()
+def run_cell(variant, factory, fn, clip, path):
     t0 = time.time()
     try:
-        captions = fn(client, path)
-        scores = judge(client, path, captions)
+        captions = fn(factory(), path)
+        # The judge always runs on the default Fireworks client so scores
+        # stay comparable across model variants.
+        scores = judge(default_client(), path, captions)
         return variant, clip, {"captions": captions, "scores": scores, "seconds": round(time.time() - t0, 1)}
     except Exception as e:
         return variant, clip, {"error": str(e)}
@@ -186,13 +214,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--variants", default=",".join(VARIANTS))
     args = ap.parse_args()
-    chosen = {k: VARIANTS[k] for k in args.variants.split(",")}
+    all_variants = {name: (default_client, fn) for name, fn in VARIANTS.items()}
+    all_variants.update(MODEL_VARIANTS)
+    chosen = {k: all_variants[k] for k in args.variants.split(",")}
 
     paths = {name: get_video(name, src) for name, src in CLIPS.items()}
     print(f"clips ready: {list(paths)}", flush=True)
 
     results: dict = {v: {} for v in chosen}
-    jobs = [(v, fn, c, p) for v, fn in chosen.items() for c, p in paths.items()]
+    jobs = [(v, factory, fn, c, p) for v, (factory, fn) in chosen.items() for c, p in paths.items()]
     with ThreadPoolExecutor(max_workers=6) as pool:
         for v, c, cell in pool.map(lambda j: run_cell(*j), jobs):
             results[v][c] = cell

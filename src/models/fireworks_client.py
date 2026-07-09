@@ -23,14 +23,19 @@ def resolve_api_key() -> str | None:
 
 
 class FireworksVLMClient:
-    def __init__(self, api_key: str | None = None, model: str | None = None):
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str | None = None,
+        base_url: str | None = None,
+    ):
         self.api_key = api_key or resolve_api_key()
         if not self.api_key:
             raise RuntimeError("Set FIREWORKS_API_KEY or FIREWORKS_API_KEY_B64")
         self.model = model or os.environ.get(
             "FIREWORKS_VLM_MODEL", "accounts/fireworks/models/kimi-k2p6"
         )
-        base_url = os.environ.get("FIREWORKS_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
+        base_url = (base_url or os.environ.get("FIREWORKS_BASE_URL", DEFAULT_BASE_URL)).rstrip("/")
         self.endpoint = f"{base_url}/chat/completions"
 
     def chat(
@@ -56,9 +61,12 @@ class FireworksVLMClient:
             "model": self.model,
             "max_tokens": max_tokens,
             "temperature": temperature,
-            "reasoning_effort": "none",
             "messages": [{"role": "user", "content": content}],
         }
+        if "fireworks.ai" in self.endpoint:
+            # kimi-k2p6 is a reasoning model; other OpenAI-compatible hosts
+            # (OpenRouter, vLLM) may reject this non-standard field.
+            payload["reasoning_effort"] = "none"
 
         last_err: Exception | None = None
         for attempt in range(retries + 1):
