@@ -88,7 +88,7 @@
     </div>
   </div>
   <p style="margin-top:26px">Hidden evaluation set: ~12 unseen clips, 30s to 2min, spanning nature, urban, animals, people, sports, food, weather, and technology.</p>
-  <div class="foot"><span>StyleCap</span><span>2 / 7</span></div>
+  <div class="foot"><span>StyleCap</span><span>2 / 8</span></div>
 </div>
 
 <!-- 3 · How it works -->
@@ -106,7 +106,7 @@
     <p>Few-shot tone exemplars are baked into the prompt. They were selected with our own LLM-judge evaluation harness
     (<span class="mono">scripts/eval_captions.py</span>), which scores candidate prompts on the same two dimensions the judges use.</p>
   </div>
-  <div class="foot"><span>StyleCap</span><span>3 / 7</span></div>
+  <div class="foot"><span>StyleCap</span><span>3 / 8</span></div>
 </div>
 
 <!-- 4 · Built for the harness -->
@@ -123,7 +123,7 @@
     <li>Public image: <span class="mono">ghcr.io/ov3rkill15/amd-video-captioning:latest</span>, anonymously pullable</li>
     <li>Container starts instantly (no model weights inside; inference is serverless via API)</li>
   </ul>
-  <div class="foot"><span>StyleCap</span><span>4 / 7</span></div>
+  <div class="foot"><span>StyleCap</span><span>4 / 8</span></div>
 </div>
 
 <!-- 5 · Robustness -->
@@ -138,24 +138,43 @@
   </div>
   <p style="margin-top:36px">Missing styles score zero for a clip. With this design, that failure mode is structurally impossible:
   the container always exits 0 with a complete <span class="mono">results.json</span>.</p>
-  <div class="foot"><span>StyleCap</span><span>5 / 7</span></div>
+  <div class="foot"><span>StyleCap</span><span>5 / 8</span></div>
 </div>
 
-<!-- 6 · Sample output -->
+<!-- 6 · Evaluation -->
+<div class="slide">
+  <div class="glow gb"></div>
+  <h2><span class="n">05</span>Measured, not guessed</h2>
+  <p style="margin-bottom:28px">Our eval harness replays the judges' rubric: an LLM judge scores <b style="color:#f2f4f8">accuracy</b> and
+  <b style="color:#f2f4f8">style</b> over 6 diverse clips × 4 styles, for every pipeline variant we considered.</p>
+  <div class="grid2" style="grid-template-columns:1fr 1fr 1fr;gap:20px">
+    <div class="card" style="border-color:#e0362c"><div class="big">0.81<small>shipped: kimi-k2p6 + tone exemplars</small></div></div>
+    <div class="card"><div class="big">0.80<small>self-critique pass · 0.79 best-of-3 · 0.78 two-stage</small></div></div>
+    <div class="card"><div class="big">0.77<small>Gemma 4 26B A/B via OpenRouter · 0.70 with 16 frames</small></div></div>
+  </div>
+  <ul class="clean" style="margin-top:36px">
+    <li>The shipped config beat every challenger, including test-time compute (best-of-3) and a self-critique pass</li>
+    <li>Counter-intuitive finding: doubling frames 8 → 16 <b style="color:#f2f4f8">hurt</b> accuracy (0.81 → 0.70)</li>
+    <li>Raw scored outputs are committed under <span class="mono">demo/samples/eval_*.json</span></li>
+  </ul>
+  <div class="foot"><span>StyleCap</span><span>6 / 8</span></div>
+</div>
+
+<!-- 7 · Sample output -->
 <div class="slide">
   <div class="glow gr"></div>
-  <h2><span class="n">05</span>Sample output · official kitten clip</h2>
+  <h2><span class="n">06</span>Sample output · official kitten clip</h2>
   <div class="cap-line b1"><div class="lbl">Formal</div><p>A small orange kitten walks slowly toward the camera through a shaded path bordered by dense green foliage and tree trunks.</p></div>
   <div class="cap-line b2"><div class="lbl">Sarcastic</div><p>Breaking news: a kitten walks forward. Nature documentaries will never recover from this level of drama.</p></div>
   <div class="cap-line b3"><div class="lbl">Humorous · tech</div><p>Kernel panic averted. This orange fluff successfully compiled a walk.exe with zero segmentation faults.</p></div>
   <div class="cap-line b4"><div class="lbl">Humorous · everyday</div><p>This kitten is walking toward you like it already knows you have no treats and does not care.</p></div>
-  <div class="foot"><span>StyleCap</span><span>6 / 7</span></div>
+  <div class="foot"><span>StyleCap</span><span>7 / 8</span></div>
 </div>
 
-<!-- 7 · Wrap up -->
+<!-- 8 · Wrap up -->
 <div class="slide">
   <div class="glow gr"></div><div class="glow gb"></div>
-  <h2><span class="n">06</span>Generalisation, not memorisation</h2>
+  <h2><span class="n">07</span>Generalisation, not memorisation</h2>
   <ul class="clean">
     <li>Prompts are purely style-driven; nothing is tuned to the example clips</li>
     <li>Same pipeline handles nature, urban, animals, people, sports, food, weather, tech footage</li>
@@ -166,7 +185,7 @@
     <div class="card"><h3>Image</h3><p class="mono" style="font-size:17px">ghcr.io/ov3rkill15/amd-video-captioning:latest</p></div>
     <div class="card"><h3>Source</h3><p class="mono" style="font-size:17px">github.com/Ov3rkill15/amd-video-captioning</p></div>
   </div>
-  <div class="foot"><span>StyleCap · AMD Developer Hackathon ACT II</span><span>7 / 7</span></div>
+  <div class="foot"><span>StyleCap · AMD Developer Hackathon ACT II</span><span>8 / 8</span></div>
 </div>
 
 </body>
