@@ -13,3 +13,4 @@ guide.md
 demo/*.mp4
 demo/vo/
 eval_results_sweep_kimi.json
+.streamlit/secrets.toml
