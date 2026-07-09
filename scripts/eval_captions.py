@@ -140,12 +140,74 @@ def v_combo(client, path):
     return {s: (parsed.get(s) or "").strip() for s in STYLES}
 
 
+def v_bestof3(client, path):
+    """Test-time compute: 3 candidate sets, an internal judge picks per style."""
+    frames = sample_frames_b64(path, 8)
+    prompt = _build_prompt(STYLES, len(frames))
+    candidates = []
+    for _ in range(3):
+        raw = client.chat(prompt, images_b64=frames, max_tokens=800, temperature=0.8)
+        parsed = _extract_json(raw) or {}
+        candidates.append({s: (parsed.get(s) or "").strip() for s in STYLES})
+
+    style_lines = "\n".join(f"- {s}: {STYLE_DEFINITIONS[s]}" for s in STYLES)
+    cand_lines = "\n".join(
+        f"{s}:\n" + "\n".join(f"  {i + 1}. \"{c[s]}\"" for i, c in enumerate(candidates))
+        for s in STYLES
+    )
+    raw = client.chat(
+        "The images are frames from one video. For each style below, pick the "
+        "candidate caption that is most accurate to the video AND lands the tone "
+        "best. Prefer specific, visually grounded captions over generic ones.\n\n"
+        f"Style definitions:\n{style_lines}\n\nCandidates:\n{cand_lines}\n\n"
+        'Respond ONLY with JSON mapping style to candidate number, e.g. {"formal": 2, ...}',
+        images_b64=frames,
+        max_tokens=200,
+        temperature=0.0,
+    )
+    picks = _extract_json(raw) or {}
+    out = {}
+    for s in STYLES:
+        try:
+            idx = int(picks.get(s, 1)) - 1
+        except (TypeError, ValueError):
+            idx = 0
+        out[s] = candidates[idx if 0 <= idx < len(candidates) else 0][s]
+    return out
+
+
+def v_critique(client, path):
+    """Baseline captions, then one revision pass against the frames."""
+    frames = sample_frames_b64(path, 8)
+    captions = generate_styled_captions(client, frames, STYLES)
+    style_lines = "\n".join(f"- {s}: {STYLE_DEFINITIONS[s]}" for s in STYLES)
+    caps = "\n".join(f'- {s}: "{captions.get(s, "")}"' for s in STYLES)
+    keys = ", ".join(f'"{s}"' for s in STYLES)
+    raw = client.chat(
+        "The images are frames from one video. Verify each caption below against "
+        "the frames. Rewrite any caption that claims something not visible in the "
+        "video, describes the wrong subject or setting, or is generic enough to fit "
+        "any video; make it specific to what the frames show. Keep the tone of its "
+        "style, 1-2 sentences, under 40 words, plain punctuation. If a caption is "
+        "already accurate and on-tone, return it unchanged.\n\n"
+        f"Style definitions:\n{style_lines}\n\nCaptions:\n{caps}\n\n"
+        f"Respond with ONLY a JSON object with keys: {keys}.",
+        images_b64=frames,
+        max_tokens=800,
+        temperature=0.4,
+    )
+    parsed = _extract_json(raw) or {}
+    return {s: ((parsed.get(s) or "").strip() or captions.get(s, "")) for s in STYLES}
+
+
 VARIANTS = {
     "baseline": v_baseline,
     "fewshot": v_fewshot,
     "twostage": v_twostage,
     "frames16": v_frames16,
     "combo": v_combo,
+    "bestof3": v_bestof3,
+    "critique": v_critique,
 }
 
 
