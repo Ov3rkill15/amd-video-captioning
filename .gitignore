@@ -9,3 +9,7 @@ eval_results.json
 input/
 output/
 AMD Hackathon Guide.md
+guide.md
+demo/*.mp4
+demo/vo/
+eval_results_sweep_kimi.json

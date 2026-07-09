@@ -1,0 +1,330 @@
+{
+  "bestof3": {
+    "traffic": {
+      "captions": {
+        "formal": "Cars and buses move along a multi-lane city street lined with yellow autumn trees, with tall residential buildings visible in the background.",
+        "sarcastic": "Another groundbreaking video of cars driving. The trees changing color really raises the stakes here.",
+        "humorous_tech": "This traffic stream has better throughput than my home Wi-Fi. Zero packet loss, infinite buffer overflow.",
+        "humorous_non_tech": "Rush hour looks like everyone suddenly remembered they left the stove on and all agreed to go check at the exact same time."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.9,
+          "style": 1.0
+        },
+        "sarcastic": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "humorous_tech": {
+          "accuracy": 0.7,
+          "style": 0.85
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.75,
+          "style": 0.9
+        }
+      },
+      "seconds": 31.8
+    },
+    "kitten": {
+      "captions": {
+        "formal": "A small orange kitten sits among leafy bushes, then walks slowly toward the camera on a dirt path.",
+        "sarcastic": "Breaking news: a kitten walked forward. Nature documentaries will never be the same.",
+        "humorous_tech": "Boot sequence complete. Kitten OS initiating direct eye contact protocol, no firewall detected.",
+        "humorous_non_tech": "This kitten is walking toward the camera like it knows it already owns the place, and honestly, it does."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.95,
+          "style": 0.95
+        },
+        "sarcastic": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "humorous_tech": {
+          "accuracy": 0.8,
+          "style": 0.95
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.9,
+          "style": 0.95
+        }
+      },
+      "seconds": 31.0
+    },
+    "office": {
+      "captions": {
+        "formal": "A young woman with an afro hairstyle sits at a white desk in a modern office, typing on a desktop computer keyboard with focused concentration.",
+        "sarcastic": "groundbreaking footage of someone doing exactly what computers are for.",
+        "humorous_tech": "Her WPM is overclocked but the CPU cooler is just office AC. No kernel panic detected yet.",
+        "humorous_non_tech": "She types like she is arguing with someone who wronged her three years ago."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.7,
+          "style": 0.85
+        },
+        "humorous_tech": {
+          "accuracy": 0.6,
+          "style": 0.8
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.75,
+          "style": 0.9
+        }
+      },
+      "seconds": 34.0
+    },
+    "bbb": {
+      "captions": {
+        "formal": "A small black creature sits motionless at the base of a large tree in a sunlit grassy clearing surrounded by dense forest.",
+        "sarcastic": "Eight frames of groundbreaking footage showing a tree that slightly changes its mind about lighting.",
+        "humorous_tech": "Tree.render() executed successfully. Creature.exe remains idle, no user input detected across 8 frames.",
+        "humorous_non_tech": "This little black blob has achieved my weekend goals: finding a nice spot under a tree and doing absolutely nothing."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.4,
+          "style": 0.75
+        },
+        "humorous_tech": {
+          "accuracy": 0.5,
+          "style": 0.85
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.7,
+          "style": 0.9
+        }
+      },
+      "seconds": 31.1
+    },
+    "sintel": {
+      "captions": {
+        "formal": "A red-haired traveler in winter clothing traverses a snowy landscape, then engages in close combat with a hooded spearman among jagged rocks.",
+        "sarcastic": "Oh great, another scenic winter walk that ends in being shoved around by a guy with a stick. Travel brochures never mention this part.",
+        "humorous_tech": "Melee combat.exe crashed. User tried to parry with bare hands, received critical error and unexpected shutdown.",
+        "humorous_non_tech": "She brought a bad attitude to a stick fight. The stick won."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.8,
+          "style": 0.85
+        },
+        "humorous_tech": {
+          "accuracy": 0.4,
+          "style": 0.75
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.75,
+          "style": 0.9
+        }
+      },
+      "seconds": 32.5
+    },
+    "beach": {
+      "captions": {
+        "formal": "A camera moves along a palm-lined beach promenade where pedestrians walk on a pink sidewalk beside a green bike lane under a bright blue sky.",
+        "sarcastic": "groundbreaking footage of people walking outside. Cannes really missed this one.",
+        "humorous_tech": "POV: you're a self-driving bike lane running a smooth 60fps render with zero pedestrian collision bugs.",
+        "humorous_non_tech": "Hundreds of people paying Florida prices to do the exact same walking they do at home for free."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.6,
+          "style": 0.85
+        },
+        "humorous_tech": {
+          "accuracy": 0.4,
+          "style": 0.75
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.35,
+          "style": 0.7
+        }
+      },
+      "seconds": 25.9
+    }
+  },
+  "critique": {
+    "traffic": {
+      "captions": {
+        "formal": "Vehicles travel along a multi-lane city road lined with autumn trees, with high-rise residential buildings visible in the background.",
+        "sarcastic": "A stunning breakthrough in urban innovation, cars driving on a road. Hold the press.",
+        "humorous_tech": "Traffic.exe is running smoothly, no fatal errors yet, though the packet loss of that red sedan is suspicious.",
+        "humorous_non_tech": "Every single one of these drivers is absolutely sure they are the main character in this city."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.9,
+          "style": 0.95
+        },
+        "sarcastic": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "humorous_tech": {
+          "accuracy": 0.75,
+          "style": 0.85
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.8,
+          "style": 0.9
+        }
+      },
+      "seconds": 22.8
+    },
+    "kitten": {
+      "captions": {
+        "formal": "A small orange kitten walks slowly toward the camera through a shaded path between leafy bushes and trees.",
+        "sarcastic": "Breaking news: a kitten walks forward. Nature documentaries will never recover from this footage.",
+        "humorous_tech": "Kitten.exe has initiated approach protocol. Tail status: upright. Cuteness buffer: overflowing.",
+        "humorous_non_tech": "This kitten is walking toward you with the confidence of someone who has never once paid a bill."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.95,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.85,
+          "style": 0.85
+        },
+        "humorous_tech": {
+          "accuracy": 0.9,
+          "style": 0.9
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.8,
+          "style": 0.85
+        }
+      },
+      "seconds": 18.8
+    },
+    "office": {
+      "captions": {
+        "formal": "A woman sits at a desk in a modern office, typing on a keyboard while looking at a large computer monitor.",
+        "sarcastic": "Thrilling footage of someone doing exactly what the chair was designed for.",
+        "humorous_tech": "Keyboard input detected. Human.exe running at 100% CPU with zero syntax errors so far.",
+        "humorous_non_tech": "She types with the focus of someone who definitely remembered to save their work. Hopefully."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.75,
+          "style": 0.85
+        },
+        "humorous_tech": {
+          "accuracy": 0.7,
+          "style": 0.8
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.8,
+          "style": 0.85
+        }
+      },
+      "seconds": 15.1
+    },
+    "bbb": {
+      "captions": {
+        "formal": "A stylized animated scene shows a large tree with exposed roots growing atop a mossy mound with a dark burrow entrance, surrounded by dense forest.",
+        "sarcastic": "Wow, a tree with a hole. Nature's studio apartment. Truly groundbreaking cinema.",
+        "humorous_tech": "Tree.exe has been running for 4.5 billion years. Uptime is solid but the root directory is getting cluttered.",
+        "humorous_non_tech": "This tree is basically me trying to hold my ground while life swirls around in a blur."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.9,
+          "style": 0.95
+        },
+        "sarcastic": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "humorous_tech": {
+          "accuracy": 0.7,
+          "style": 0.85
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.3,
+          "style": 0.4
+        }
+      },
+      "seconds": 15.7
+    },
+    "sintel": {
+      "captions": {
+        "formal": "A red-haired figure traverses a snowy, alien landscape and confronts an armed pursuer among jagged rock formations.",
+        "sarcastic": "Oh great, another scenic winter hike that ends in a stick fight. Travel blogs never mention this part.",
+        "humorous_tech": "NPC pathfinding failed. The local wildlife spawned with melee weapons and aggressive AI in this snow biome.",
+        "humorous_non_tech": "She went out for a quiet walk in the snow and suddenly everyone wants to play whack-a-mole with sticks."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.75,
+          "style": 0.85
+        },
+        "humorous_tech": {
+          "accuracy": 0.7,
+          "style": 0.9
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.6,
+          "style": 0.8
+        }
+      },
+      "seconds": 18.0
+    },
+    "beach": {
+      "captions": {
+        "formal": "Pedestrians walk along a palm-lined promenade beside a green bike lane on a sunny coastal street.",
+        "sarcastic": "Wow, people walking near palm trees. Truly groundbreaking content for the ages.",
+        "humorous_tech": "POV: your GPS rerouted you to 'render_beach_walk.exe' and now you're stuck in an infinite loop of tourists.",
+        "humorous_non_tech": "Everyone here looks like they're either late for a nap or already had three margaritas for breakfast."
+      },
+      "scores": {
+        "formal": {
+          "accuracy": 0.85,
+          "style": 0.9
+        },
+        "sarcastic": {
+          "accuracy": 0.7,
+          "style": 0.8
+        },
+        "humorous_tech": {
+          "accuracy": 0.4,
+          "style": 0.75
+        },
+        "humorous_non_tech": {
+          "accuracy": 0.3,
+          "style": 0.85
+        }
+      },
+      "seconds": 12.5
+    }
+  }
+}
