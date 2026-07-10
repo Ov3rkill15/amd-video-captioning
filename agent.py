@@ -21,10 +21,16 @@ from dotenv import load_dotenv
 
 from src.models.fireworks_client import FireworksVLMClient
 from src.pipeline.extract_frames import sample_frames_b64
-from src.pipeline.style_caption import FALLBACK_CAPTIONS, generate_styled_captions
+from src.pipeline.style_caption import (
+    FALLBACK_CAPTIONS,
+    generate_styled_captions,
+    generate_verified_captions,
+)
 
 DEFAULT_STYLES = ["formal", "sarcastic", "humorous_tech", "humorous_non_tech"]
-NUM_FRAMES = 8
+# "verified" = describe -> verify -> per-style writer; "oneshot" = single VLM call.
+CAPTION_MODE = os.environ.get("CAPTION_MODE", "verified").strip().lower()
+NUM_FRAMES = int(os.environ.get("NUM_FRAMES", "5" if CAPTION_MODE == "verified" else "8"))
 MAX_WORKERS = 4
 DOWNLOAD_TIMEOUT = 180
 
@@ -51,7 +57,10 @@ def process_task(task: dict, client: FireworksVLMClient, work_dir: str) -> dict:
     try:
         video_path = resolve_video(task["video_url"], work_dir, task_id)
         frames = sample_frames_b64(video_path, num_frames=NUM_FRAMES)
-        captions = generate_styled_captions(client, frames, styles)
+        if CAPTION_MODE == "verified":
+            captions = generate_verified_captions(client, frames, styles)
+        else:
+            captions = generate_styled_captions(client, frames, styles)
         if video_path.startswith(work_dir):  # only delete files we downloaded
             Path(video_path).unlink(missing_ok=True)
         print(f"[task {task_id}] done in {time.time() - started:.1f}s", flush=True)

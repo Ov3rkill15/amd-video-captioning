@@ -34,6 +34,7 @@ from src.pipeline.style_caption import (  # noqa: E402
     _build_prompt,
     _extract_json,
     generate_styled_captions,
+    generate_verified_captions,
 )
 
 STYLES = ["formal", "sarcastic", "humorous_tech", "humorous_non_tech"]
@@ -200,8 +201,14 @@ def v_critique(client, path):
     return {s: ((parsed.get(s) or "").strip() or captions.get(s, "")) for s in STYLES}
 
 
+def v_verified(client, path):
+    """Describe -> verify -> per-style 25-60 word captions, 5 frames."""
+    return generate_verified_captions(client, sample_frames_b64(path, 5), STYLES)
+
+
 VARIANTS = {
     "baseline": v_baseline,
+    "verified": v_verified,
     "fewshot": v_fewshot,
     "twostage": v_twostage,
     "frames16": v_frames16,
